@@ -13,6 +13,7 @@ import { Routes, Route } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import ProtectedRoute from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip';
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -24,6 +25,7 @@ function App() {
     const [cardForDelete, setCardForDelete] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
 
     useEffect(() => {
       Promise.all([api.getProfile(), api.getCard()])
@@ -136,42 +138,52 @@ function App() {
 
         <Routes>
 
-        <Route
-          exact path="/"
-          // loggedIn={loggedIn}
-          element={
-            <Main 
-              onEditAvatar={handleEditAvatarClick}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onCardClick={handleCardClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleConfirmationClick}
-            />
+          <Route
+            path="/"
+            loggedIn={loggedIn}
+            element={
+              <ProtectedRoute>
+                  <Main 
+                    onEditAvatar={handleEditAvatarClick}
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onCardClick={handleCardClick}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleConfirmationClick}
+                  />
+                </ProtectedRoute>
             }
-        />
+            />
+              
+          
 
-        <Route 
-          path="/sign-up"
-          element={
-            <Register />
-          } 
-        />
+          <Route 
+            path="/sign-up"
+            element={
+              <>
+                <Register />
+                <InfoTooltip />
+              </>
+            } 
+          />
 
-        <Route 
-          path="/sign-in" 
-          element={
-            <Login />
-          }
-        />
+          <Route 
+            path="/sign-in" 
+            element={
+              <>
+                <Login />
+                <InfoTooltip />
+              </>
+            }
+          />
 
-        <Route
-          path="*"
-          element={
-            null
-          } 
-        />
+          <Route
+            path="*"
+            element={
+              null
+            } 
+          />
 
         </Routes>
 
