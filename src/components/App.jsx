@@ -135,11 +135,11 @@ function App() {
     const handleLogin = (email, password) => {
       return authorize(email, password)
         .then((data) => {
-          if (!data?.jwt) return;
+          console.log('data.jwt: ', data.token);
+          if (!data?.token) return;
           
-          localStorage.setItem('jwt', data.jwt)
+          localStorage.setItem('jwt', data.token)
           setLoggedIn(true);
-          setIsInfoTooltipOpen(true)
           navigate('/')
         })
     }
@@ -187,11 +187,15 @@ function App() {
       tokenCheck()
     }, []);
 
+    const handleLogout = () => {
+      localStorage.removeItem('jwt');
+    };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         
-        <Header />
+        <Header onLogout={handleLogout} />
 
         <Routes>
 
@@ -199,63 +203,59 @@ function App() {
             path="/"
             element={
               <ProtectedRoute 
-                loggedIn={loggedIn}
-                onEditAvatar={handleEditAvatarClick}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleConfirmationClick}
-                element={<Main />}>
+                path="/"
+                loggedIn={loggedIn}>
+                {
+                  <Main 
+                    onEditAvatar={handleEditAvatarClick}
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onCardClick={handleCardClick}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleConfirmationClick}
+                  />
+                } 
               </ProtectedRoute>
             }
             />
               
-          
-
           <Route 
             path="/sign-up"
-            element={
-              <>
-                <Register 
-                  onRegister={handleRegister}
-                />
-                <InfoTooltip 
-                  isOpen={isInfoTooltipOpen}
-                  loggedIn={loggedIn}
-                  onClose={closeAllPopups}
-                />
-              </>
+            element=
+            {
+              <Register 
+                onRegister={handleRegister}
+              />
             } 
           />
 
           <Route 
             path="/sign-in" 
-            element={
-              <>
-                <Login 
+            element=
+            {
+              <Login 
                   onLogin={handleLogin}
                 />
-                <InfoTooltip 
-                  isOpen={isInfoTooltipOpen}
-                  loggedIn={loggedIn}
-                  onClose={closeAllPopups}
-                />
-              </>
             }
           />
 
-          <Route
+          {/* <Route
             path="*"
             element={
               loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
             } 
-          />
+          /> */}
 
         </Routes>
 
         <Footer />
+
+        <InfoTooltip 
+          isOpen={isInfoTooltipOpen}
+          loggedIn={loggedIn}
+          onClose={closeAllPopups}
+        />
 
         <EditProfilePopup 
           isOpen={isEditProfilePopupOpen}
