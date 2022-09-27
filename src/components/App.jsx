@@ -30,13 +30,15 @@ function App() {
     const navigate = useNavigate()
 
     useEffect(() => {
+      if (loggedIn) {
       Promise.all([api.getProfile(), api.getCard()])
           .then(([user, data]) => {
               setCurrentUser(user)
               setCards(data);
           })
           .catch((err) => console.log(err))
-  }, []);
+        }
+  }, [loggedIn]);
 
     function handleCardLike(card) {
       const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -143,6 +145,9 @@ function App() {
           setLoggedIn(true);
           navigate('/')
         })
+        .catch(() => {
+          setIsInfoTooltipOpen(true);
+        })
     }
 
     const handleRegister = (email, password) => {
@@ -166,16 +171,20 @@ function App() {
 
     useEffect(() => {
       const tokenCheck = () => {
-        if (!localStorage.getItem('jwt')) return;
-  
         const jwt = localStorage.getItem('jwt');
+        if (!jwt) return;
+  
+        
         getContent(jwt)
           .then((res) => {
             if (res) {
               setLoggedIn(true);
               navigate('/');
             };
-          });
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       };
 
       tokenCheck()
@@ -243,6 +252,8 @@ function App() {
           loggedIn={loggedIn}
           onClose={closeAllPopups}
           registered={registered}
+          positiveResultText={'Вы успешно зарегистрировались!'}
+          negativeResultText={'Что-то пошло не так! Попробуйте ещё раз.'}
         />
 
         <EditProfilePopup 

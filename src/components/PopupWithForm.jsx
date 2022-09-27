@@ -16,7 +16,6 @@ function PopupWithForm({name, title, children, buttonDefaultText, isOpen, onClos
                 onSubmit={onSubmit} 
                 name={`${name}`} 
                 className="popup__form" 
-                noValidate
                 >
                   {children}
               </form>
