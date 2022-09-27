@@ -25,6 +25,7 @@ function App() {
     const [cardForDelete, setCardForDelete] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [registered, setRegistered] = useState(false);
     const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
     const navigate = useNavigate()
 
@@ -144,23 +145,16 @@ function App() {
         })
     }
 
-    // const handleLogin = async(email, password) => {
-    //   try {
-    //     await authorize(email, password)
-    //     setLoggedIn(true)
-    //     setIsInfoTooltipOpen(true)
-    //     navigate('/')
-    //   } catch (err) {
-    //     console.log(err)
-    //     setIsInfoTooltipOpen(true)
-    //   }
-    // }
-
     const handleRegister = (email, password) => {
       return register(email, password)
         .then(() => {
-          setIsInfoTooltipOpen(true)
-          navigate('/sign-in')
+          setRegistered(true);
+          setIsInfoTooltipOpen(true);
+          navigate('/sign-in');
+        })
+        .catch(() => {
+          setRegistered(false);
+          setIsInfoTooltipOpen(true);
         })
     };
 
@@ -240,13 +234,6 @@ function App() {
             }
           />
 
-          {/* <Route
-            path="*"
-            element={
-              loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
-            } 
-          /> */}
-
         </Routes>
 
         <Footer />
@@ -255,6 +242,7 @@ function App() {
           isOpen={isInfoTooltipOpen}
           loggedIn={loggedIn}
           onClose={closeAllPopups}
+          registered={registered}
         />
 
         <EditProfilePopup 

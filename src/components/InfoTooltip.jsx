@@ -1,7 +1,7 @@
 import success from '../images/success.svg'
 import error from '../images/error.svg'
 
-const InfoTooltip = ({isOpen, onClose, loggedIn}) => {
+const InfoTooltip = ({isOpen, onClose, registered}) => {
   return(
     <div className={`popup popup__infoTooltip ${isOpen && "popup_isOpen"}`}>
       <div className="popup__content popup__content-infoTooltip">
@@ -10,9 +10,9 @@ const InfoTooltip = ({isOpen, onClose, loggedIn}) => {
           type="button" 
           className="popup__close"
         />
-        <img className="popup__infoTooltip-image" src={ loggedIn ? success : error } alt="результат" />
+        <img className="popup__infoTooltip-image" src={ registered ? success : error } alt="результат" />
         <p className="popup__infoTooltip-message">
-          { loggedIn ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте ещё раз.' }
+          { registered ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте ещё раз.' }
         </p>
       </div>
     </div>
