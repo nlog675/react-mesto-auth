@@ -27,6 +27,7 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [registered, setRegistered] = useState(false);
     const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+    const [userEmail, setUserEmail] = useState('')
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -138,11 +139,12 @@ function App() {
     const handleLogin = (email, password) => {
       return authorize(email, password)
         .then((data) => {
-          console.log('data.jwt: ', data.token);
+          
           if (!data?.token) return;
           
           localStorage.setItem('jwt', data.token)
           setLoggedIn(true);
+          setUserEmail(email)
           navigate('/')
         })
         .catch(() => {
@@ -173,10 +175,10 @@ function App() {
       const tokenCheck = () => {
         const jwt = localStorage.getItem('jwt');
         if (!jwt) return;
-  
         
         getContent(jwt)
           .then((res) => {
+            setUserEmail(res?.data?.email);
             if (res) {
               setLoggedIn(true);
               navigate('/');
@@ -192,13 +194,15 @@ function App() {
 
     const handleLogout = () => {
       localStorage.removeItem('jwt');
+      setLoggedIn(false);
+      setUserEmail('');
     };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         
-        <Header onLogout={handleLogout} />
+        <Header onLogout={handleLogout} email={userEmail}/>
 
         <Routes>
 
